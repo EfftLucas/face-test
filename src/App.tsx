@@ -106,7 +106,7 @@ export function App() {
 
           const imageSrc = webcamRef.current?.getScreenshot();
           downloadRef.current?.setAttribute("href", imageSrc!);
-          downloadRef.current?.setAttribute("download", "foto.png");
+          downloadRef.current?.setAttribute("download", "foto.jpg");
           
           window.alert("Prova de vida realizada com sucesso!")
         }
@@ -127,7 +127,7 @@ export function App() {
   return (
     <>
       <div className="m-auto w-1/2 h-auto relative">
-        <Webcam mirrored className="w-full" videoConstraints={{ width: 720, height: 560, facingMode: 'user' }} ref={webcamRef} width={720} height={560}></Webcam>
+        <Webcam mirrored className="w-full" screenshotFormat={'image/jpeg'} screenshotQuality={0.8} videoConstraints={{ width: 300, height: 300, facingMode: 'user' }} ref={webcamRef} width={720} height={560}></Webcam>
         {faceOrientationGuide === "Direita" && 
         <div className="absolute top-0 right-0 h-full bg-zinc-700 bg-opacity-75 flex justify-center items-center animate-pulse">
           <ArrowRight className="text-zinc-950 animate-pulse" height={200} width={200} />
