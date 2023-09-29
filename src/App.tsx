@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import Webcam from "react-webcam";
 import * as faceapi from "face-api.js";
+import { ArrowLeft, ArrowRight } from "@phosphor-icons/react";
 
 export function App() {
   const webcamRef = useRef<Webcam>(null);
@@ -68,7 +69,7 @@ export function App() {
           setHasTurnedLeft(true);
         }
 
-        if(!hasTurnedRight && faceOrientation === "Direita" && faceOrientationGuide === "Direita") {
+        if(hasTurnedLeft && !hasTurnedRight && faceOrientation === "Direita" && faceOrientationGuide === "Direita") {
           setHasTurnedRight(true);
         }
 
@@ -100,11 +101,24 @@ export function App() {
 
   return (
     <>
-      <Webcam ref={webcamRef} width={720} height={560}></Webcam>
+      <div className="m-auto w-1/2 h-auto relative">
+        <Webcam mirrored className="w-full" ref={webcamRef} width={720} height={560}></Webcam>
+        {faceOrientationGuide === "Direita" && 
+        <div className="absolute top-0 right-0 h-full bg-zinc-700 bg-opacity-75 flex justify-center items-center animate-pulse">
+          <ArrowRight className="text-zinc-950 animate-pulse" height={200} width={200} />
+        </div>
+        }
+        {faceOrientationGuide === "Esquerda" &&
+        <div className="absolute top-0 left-0 h-full bg-transparent flex justify-center items-center bg-zinc-700 bg-opacity-75 animate-pulse">
+          <ArrowLeft className="text-zinc-950 animate-pulse" height={200} width={200} />
+        </div>
+        }
+        
+      </div>
       {canTakePhoto && <button onClick={handleTakePhoto}>Tirar foto</button>}
       <button onClick={handleLiveness}>Prova de vida</button>
-      <div>{faceOrientationGuide && `Vire o rosto para ${faceOrientationGuide}`}</div>
-      <a ref={downloadRef}>Download</a>
+      <div className="text-3xl font-bold underline">{faceOrientationGuide && `Vire o rosto para ${faceOrientationGuide}`}</div>
+      <a className="text-3xl font-bold underline" ref={downloadRef}>Download</a>
     </>
   );
 }
