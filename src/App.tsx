@@ -20,9 +20,9 @@ export function App() {
 
   useEffect(() => {
     const loadModels = async () => {
-      await faceapi.loadSsdMobilenetv1Model("/models");
-      await faceapi.loadFaceExpressionModel("/models");
-      await faceapi.loadFaceLandmarkModel("/models");
+      await faceapi.loadTinyFaceDetectorModel("/models");
+      await faceapi.loadFaceLandmarkTinyModel("/models");
+      await faceapi.loadFaceLandmarkTinyModel("/models");
     };
 
     const analyzeEmotions = async () => {
@@ -33,13 +33,12 @@ export function App() {
      if(currentWebcam) {
       setInterval(async () => {
         const detections = await faceapi
-          .detectAllFaces(currentWebcam, new faceapi.SsdMobilenetv1Options())
-          .withFaceLandmarks()
-          .withFaceExpressions();
+          .detectSingleFace(currentWebcam, new faceapi.TinyFaceDetectorOptions())
+          .withFaceLandmarks(true)
           
 
-        if (detections.length > 0) {
-          const face = detections[0];
+        if (detections) {
+          const face = detections;
           // Detecta a orientação do rosto
           const eye_right = getMeanPosition(face.landmarks.getRightEye());
           const eye_left = getMeanPosition(face.landmarks.getLeftEye());
@@ -138,7 +137,6 @@ export function App() {
         }
         
       </div>
-      {faceOrientation && <div className="text-3xl font-bold">Orientação: {faceOrientation}</div>}
       {canTakePhoto && <button onClick={handleTakePhoto}>Tirar foto</button>}
       <button onClick={handleLiveness}>Prova de vida</button>
       <div className="text-3xl font-bold underline">{faceOrientationGuide && `Vire o rosto para ${faceOrientationGuide}`}</div>
