@@ -111,7 +111,7 @@ export function App() {
           window.alert("Prova de vida realizada com sucesso!")
         }
       }
-    }, 100);
+    }, 1000);
     return () => clearInterval(interval);
   }, [faceOrientation, isLiveness, hasTurnedLeft, hasTurnedRight, faceOrientationGuide])
 
