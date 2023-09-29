@@ -139,10 +139,10 @@ export function App() {
         }
         
       </div>
-      {canTakePhoto && <button onClick={handleTakePhoto}>Tirar foto</button>}
-      <button onClick={handleLiveness}>Prova de vida</button>
+      {canTakePhoto && <button className="mt-1 inline-block shrink-0 w-full rounded-md border border-blue-600 bg-blue-600 px-12 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-blue-600 focus:outline-none focus:ring active:text-blue-500 dark:hover:bg-blue-700 dark:hover:text-white" onClick={handleTakePhoto}>Tirar foto</button>}
+      <button className="mt-1 inline-block shrink-0 w-full rounded-md border border-blue-600 bg-blue-600 px-12 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-blue-600 focus:outline-none focus:ring active:text-blue-500 dark:hover:bg-blue-700 dark:hover:text-white" onClick={handleLiveness}>Prova de vida</button>
       <div className="text-3xl font-bold underline">{faceOrientationGuide && `Vire o rosto para ${faceOrientationGuide}`}</div>
-      <a className="text-3xl font-bold underline" ref={downloadRef}>Download</a>
+      <a className="mt-1 inline-block shrink-0 w-full rounded-md border border-blue-600 bg-blue-600 px-12 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-blue-600 focus:outline-none focus:ring active:text-blue-500 dark:hover:bg-blue-700 dark:hover:text-white text-center" ref={downloadRef}>Download</a>
     </>
   );
 }
