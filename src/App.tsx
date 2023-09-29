@@ -3,12 +3,15 @@ import Webcam from "react-webcam";
 import * as faceapi from "face-api.js";
 import { ArrowLeft, ArrowRight } from "@phosphor-icons/react";
 
+interface Point {
+  x: number;
+  y: number;
+}
+
 export function App() {
   const webcamRef = useRef<Webcam>(null);
   const downloadRef = useRef<HTMLAnchorElement>(null);
   const [isLiveness, setIsLiveness] = useState(false);
-  const [leftEye, setLeftEye] = useState<number | null>(null);
-  const [rightEye, setRightEye] = useState<number | null>(null);
   const [canTakePhoto, setCanTakePhoto] = useState(false);
   const [hasTurnedRight, setHasTurnedRight] = useState(false);
   const [hasTurnedLeft, setHasTurnedLeft] = useState(false);
@@ -38,23 +41,34 @@ export function App() {
         if (detections.length > 0) {
           const face = detections[0];
           // Detecta a orientação do rosto
-          const leftEye = face.landmarks.getLeftEye()[0];
-          const rightEye = face.landmarks.getRightEye()[0];
+          const eye_right = getMeanPosition(face.landmarks.getRightEye());
+          const eye_left = getMeanPosition(face.landmarks.getLeftEye());
+          const nose = getMeanPosition(face.landmarks.getNose());
+          const mouth = getMeanPosition(face.landmarks.getMouth());
+          const jaw = getTop(face.landmarks.getJawOutline());
 
-          // Defina faixas de valores para determinar a orientação
-          const leftThreshold = 300;
-          const rightThreshold = 400;
+          const rx = (jaw - mouth[1]) / face.detection.box.height + 0.5;
+          const ry =
+            (eye_left[0] + (eye_right[0] - eye_left[0]) / 2 - nose[0]) /
+            face.detection.box.width;
 
-          setLeftEye(leftEye.x);
-          setRightEye(rightEye.x);
+          let state = "undetected";
+          if (face.detection.score > 0.3) {
+            state = "Frente";
+            if (rx > 0.2) {
+              state = "Cima";
+            } else {
+              if (ry < -0.04) {
+                state = "Esquerda";
+              }
+              if (ry > 0.04) {
+                state = "Direita";
+              }
+            }
+          }
 
-          if (leftEye.x > rightThreshold && rightEye.x > rightThreshold) {
-            setFaceOrientation("Esquerda");
-          } else if (leftEye.x < leftThreshold && rightEye.x > leftThreshold) {
-            setFaceOrientation("Direita");
-          } else {
-            setFaceOrientation("Neutral");
-        }
+          // Use 'state' for further processing based on face orientation
+          setFaceOrientation(state);
         } else {
           setFaceOrientation(null);
         }
@@ -124,12 +138,20 @@ export function App() {
         }
         
       </div>
-      {leftEye && <div className="text-3xl font-bold">Olho esquerdo: {leftEye}</div>}
-      {rightEye && <div className="text-3xl font-bold">Olho direito: {rightEye}</div>}
+      {faceOrientation && <div className="text-3xl font-bold">Orientação: {faceOrientation}</div>}
       {canTakePhoto && <button onClick={handleTakePhoto}>Tirar foto</button>}
       <button onClick={handleLiveness}>Prova de vida</button>
       <div className="text-3xl font-bold underline">{faceOrientationGuide && `Vire o rosto para ${faceOrientationGuide}`}</div>
       <a className="text-3xl font-bold underline" ref={downloadRef}>Download</a>
     </>
   );
+}
+
+function getTop(l: Point[]): number {
+  return l.map((a) => a.y).reduce((a, b) => Math.min(a, b));
+}
+
+function getMeanPosition(l: Point[]): number[] {
+  const sum = l.reduce((a, b) => [a[0] + b.x, a[1] + b.y], [0, 0]);
+  return [sum[0] / l.length, sum[1] / l.length];
 }
