@@ -23,9 +23,12 @@ export function App() {
     const analyzeEmotions = async () => {
       await loadModels();
 
+      const currentWebcam = webcamRef.current?.video;
+
+     if(currentWebcam) {
       setInterval(async () => {
         const detections = await faceapi
-          .detectAllFaces(webcamRef.current?.video, new faceapi.SsdMobilenetv1Options())
+          .detectAllFaces(currentWebcam, new faceapi.SsdMobilenetv1Options())
           .withFaceLandmarks()
           .withFaceExpressions();
           
@@ -51,6 +54,7 @@ export function App() {
           setFaceOrientation(null);
         }
       }, 100);
+     }
     };
 
     analyzeEmotions();
