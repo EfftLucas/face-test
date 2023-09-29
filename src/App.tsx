@@ -7,6 +7,8 @@ export function App() {
   const webcamRef = useRef<Webcam>(null);
   const downloadRef = useRef<HTMLAnchorElement>(null);
   const [isLiveness, setIsLiveness] = useState(false);
+  const [leftEye, setLeftEye] = useState<number | null>(null);
+  const [rightEye, setRightEye] = useState<number | null>(null);
   const [canTakePhoto, setCanTakePhoto] = useState(false);
   const [hasTurnedRight, setHasTurnedRight] = useState(false);
   const [hasTurnedLeft, setHasTurnedLeft] = useState(false);
@@ -42,6 +44,9 @@ export function App() {
           // Defina faixas de valores para determinar a orientação
           const leftThreshold = 300;
           const rightThreshold = 400;
+
+          setLeftEye(leftEye.x);
+          setRightEye(rightEye.x);
 
           if (leftEye.x > rightThreshold && rightEye.x > rightThreshold) {
             setFaceOrientation("Esquerda");
@@ -119,6 +124,8 @@ export function App() {
         }
         
       </div>
+      {leftEye && <div className="text-3xl font-bold">Olho esquerdo: {leftEye}</div>}
+      {rightEye && <div className="text-3xl font-bold">Olho direito: {rightEye}</div>}
       {canTakePhoto && <button onClick={handleTakePhoto}>Tirar foto</button>}
       <button onClick={handleLiveness}>Prova de vida</button>
       <div className="text-3xl font-bold underline">{faceOrientationGuide && `Vire o rosto para ${faceOrientationGuide}`}</div>
