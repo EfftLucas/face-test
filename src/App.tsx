@@ -125,7 +125,7 @@ export function App() {
   return (
     <>
       <div className="m-auto w-1/2 h-auto relative">
-        <Webcam mirrored videoConstraints={{ width: 720, height: 560, facingMode: 'user' }} ref={webcamRef} width={720} height={560}></Webcam>
+        <Webcam mirrored className="w-full" videoConstraints={{ width: 720, height: 560, facingMode: 'user' }} ref={webcamRef} width={720} height={560}></Webcam>
         {faceOrientationGuide === "Direita" && 
         <div className="absolute top-0 right-0 h-full bg-zinc-700 bg-opacity-75 flex justify-center items-center animate-pulse">
           <ArrowRight className="text-zinc-950 animate-pulse" height={200} width={200} />
