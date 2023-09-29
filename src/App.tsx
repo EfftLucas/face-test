@@ -26,9 +26,8 @@ export function App() {
     };
 
     const analyzeEmotions = async () => {
+      await loadModels();
       if (isLiveness) {
-        await loadModels();
-
       const currentWebcam = webcamRef.current?.video;
 
      if(currentWebcam) {
