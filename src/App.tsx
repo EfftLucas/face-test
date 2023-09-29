@@ -87,6 +87,8 @@ export function App() {
           setFaceOrientationGuide("Esquerda");
         } else if (!hasTurnedRight) {
           setFaceOrientationGuide("Direita");
+        } else if (hasTurnedLeft && hasTurnedRight) {
+          setFaceOrientationGuide("Frente");
         }
         
         if(!hasTurnedLeft && faceOrientation === "Esquerda" && faceOrientationGuide === "Esquerda") {
@@ -97,22 +99,21 @@ export function App() {
           setHasTurnedRight(true);
         }
 
-        if(hasTurnedRight && hasTurnedLeft) {
+        if(hasTurnedLeft && hasTurnedRight && faceOrientation === "Frente") {
           setIsLiveness(false);
           setCanTakePhoto(true);
           setFaceOrientationGuide(null);
+
+          const imageSrc = webcamRef.current?.getScreenshot();
+          downloadRef.current?.setAttribute("href", imageSrc!);
+          downloadRef.current?.setAttribute("download", "foto.png");
+          
           window.alert("Prova de vida realizada com sucesso!")
         }
       }
     }, 100);
     return () => clearInterval(interval);
   }, [faceOrientation, isLiveness, hasTurnedLeft, hasTurnedRight, faceOrientationGuide])
-
-  function handleTakePhoto() {
-    const imageSrc = webcamRef.current?.getScreenshot();
-    downloadRef.current?.setAttribute("href", imageSrc!);
-    downloadRef.current?.setAttribute("download", "foto.png");
-  }
 
   function handleLiveness() {
     setIsLiveness(true);
@@ -132,6 +133,15 @@ export function App() {
           <ArrowRight className="text-zinc-950 animate-pulse" height={200} width={200} />
         </div>
         }
+        {faceOrientationGuide === "Frente" && 
+        <div className="absolute top-0 right-0 h-full bg-zinc-700 bg-opacity-75 flex justify-center items-center animate-pulse">
+          <ArrowLeft className="text-zinc-950 animate-pulse" height={200} width={200} />
+        </div>}
+        {faceOrientationGuide === "Frente" &&
+        <div className="absolute top-0 left-0 h-full bg-transparent flex justify-center items-center bg-zinc-700 bg-opacity-75 animate-pulse">
+          <ArrowRight className="text-zinc-950 animate-pulse" height={200} width={200} />
+        </div>
+        }
         {faceOrientationGuide === "Esquerda" &&
         <div className="absolute top-0 left-0 h-full bg-transparent flex justify-center items-center bg-zinc-700 bg-opacity-75 animate-pulse">
           <ArrowLeft className="text-zinc-950 animate-pulse" height={200} width={200} />
@@ -139,7 +149,6 @@ export function App() {
         }
         
       </div>
-      {canTakePhoto && <button className="mt-1 inline-block shrink-0 w-full rounded-md border border-blue-600 bg-blue-600 px-12 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-blue-600 focus:outline-none focus:ring active:text-blue-500 dark:hover:bg-blue-700 dark:hover:text-white" onClick={handleTakePhoto}>Tirar foto</button>}
       <button className="mt-1 inline-block shrink-0 w-full rounded-md border border-blue-600 bg-blue-600 px-12 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-blue-600 focus:outline-none focus:ring active:text-blue-500 dark:hover:bg-blue-700 dark:hover:text-white" onClick={handleLiveness}>Prova de vida</button>
       <div className="text-3xl font-bold underline">{faceOrientationGuide && `Vire o rosto para ${faceOrientationGuide}`}</div>
       <a className="mt-1 inline-block shrink-0 w-full rounded-md border border-blue-600 bg-blue-600 px-12 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-blue-600 focus:outline-none focus:ring active:text-blue-500 dark:hover:bg-blue-700 dark:hover:text-white text-center" ref={downloadRef}>Download</a>
