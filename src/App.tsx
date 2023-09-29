@@ -26,7 +26,8 @@ export function App() {
     };
 
     const analyzeEmotions = async () => {
-      await loadModels();
+      if (isLiveness) {
+        await loadModels();
 
       const currentWebcam = webcamRef.current?.video;
 
@@ -73,10 +74,11 @@ export function App() {
         }
       }, 1000);
      }
+    }
     };
 
     analyzeEmotions();
-  }, []);
+  }, [isLiveness]);
 
   useEffect(() => {
     const interval = setInterval(() => {
