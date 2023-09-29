@@ -72,7 +72,7 @@ export function App() {
         } else {
           setFaceOrientation(null);
         }
-      }, 1000);
+      }, 100);
      }
     }
     };
