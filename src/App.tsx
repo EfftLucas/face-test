@@ -53,7 +53,7 @@ export function App() {
         } else {
           setFaceOrientation(null);
         }
-      }, 100);
+      }, 1000);
      }
     };
 
