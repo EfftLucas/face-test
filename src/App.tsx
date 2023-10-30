@@ -110,7 +110,7 @@ export function App() {
               className="mt-1 inline-block shrink-0 w-full rounded-md border border-blue-600 bg-blue-600 px-12 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-blue-600 focus:outline-none focus:ring active:text-blue-500 dark:hover:bg-blue-700 dark:hover:text-white"
               onClick={handleSmile}
             >
-              Sorria!
+              Prova de vida
             </button>
           )}
           {canTakePhoto && (
@@ -121,7 +121,7 @@ export function App() {
                 setIsNeutral(false); // Reset neutrality state
               }}
             >
-              Remover Foto
+              Tentar denovo
             </a>
           )}
 
