@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import Webcam from "react-webcam";
 import * as faceapi from "face-api.js";
+import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 export function App() {
   const webcamRef = useRef<Webcam>(null);
@@ -43,6 +45,7 @@ export function App() {
                 setIsSmiling(false);
                 setIsNeutral(true);
                 console.log("Smile detected.");
+                toast('Fique normal!', {type: 'info'})
               } else if (isNeutral && detections.expressions.neutral > 0.8) {
                 
                 setIsNeutral(false);
@@ -60,12 +63,20 @@ export function App() {
   }, [isLiveness, isSmiling, isNeutral]);
 
   function handleSmile() {
+    toast('Sorria!', {type: 'info'})
     setIsLiveness(true);
     setIsSmiling(true);
   }
 
+  useEffect(() => {
+    if(canTakePhoto) {
+      window.confirm("Foto tirada com sucesso!");
+    }
+  }, [canTakePhoto])
+
   return (
     <>
+    <ToastContainer />
       {modelsLoaded ? (
         <div className="m-auto w-1/2 h-auto relative">
           <Webcam
