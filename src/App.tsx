@@ -10,6 +10,8 @@ export function App() {
   const [isLiveness, setIsLiveness] = useState(false);
   const [isSmiling, setIsSmiling] = useState(false);
   const [canTakePhoto, setCanTakePhoto] = useState(false);
+  const [isPhotoTaken, setIsPhotoTaken] = useState(false);
+  const [isPhotoSaved, setIsPhotoSaved] = useState('');
   const [isNeutral, setIsNeutral] = useState(false);
 
   useEffect(() => {
@@ -44,35 +46,49 @@ export function App() {
                 
                 setIsSmiling(false);
                 setIsNeutral(true);
-                console.log("Smile detected.");
                 toast('Fique normal!', {type: 'info'})
               } else if (isNeutral && detections.expressions.neutral > 0.8) {
                 
                 setIsNeutral(false);
                 setCanTakePhoto(true);
-                console.log("Neutral expression detected.");
+                handleTakePhoto()
               }
             }
           }, 100);
         }
       }
+
+      function handleTakePhoto() {
+        console.log('aa')
+        setIsPhotoTaken(true);
+        setCanTakePhoto(false);
+    
+        setTimeout(() => {
+          const photo = webcamRef.current?.getScreenshot();
+    
+        if (photo) {
+          setIsPhotoSaved(photo);
+          toast('Foto tirada com sucesso!', {type: 'success'})
+        }
+        }, 2000)
+      }
     };
 
+    
+
     analyzeEmotions();
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval)
+    };
   }, [isLiveness, isSmiling, isNeutral]);
+
+  
 
   function handleSmile() {
     toast('Sorria!', {type: 'info'})
     setIsLiveness(true);
     setIsSmiling(true);
   }
-
-  useEffect(() => {
-    if(canTakePhoto) {
-      window.confirm("Foto tirada com sucesso!");
-    }
-  }, [canTakePhoto])
 
   return (
     <>
@@ -99,7 +115,7 @@ export function App() {
           )}
           {canTakePhoto && (
             <a
-              className="mt-1 inline-block shrink-0 w-full rounded-md border border-blue-600 bg-blue-600 px-12 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-blue-600 focus:outline-none focus:ring active:text-blue-500 dark:hover:bg-blue-700 dark:hover:text-white text-center"
+              className="mt-1 inline-block shrink-0 w-1/2 rounded-md border border-blue-600 bg-blue-600 px-12 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-blue-600 focus:outline-none focus:ring active:text-blue-500 dark:hover:bg-blue-700 dark:hover:text-white text-center"
               onClick={() => {
                 setCanTakePhoto(false);
                 setIsNeutral(false); // Reset neutrality state
@@ -107,6 +123,15 @@ export function App() {
             >
               Remover Foto
             </a>
+          )}
+
+          {isPhotoTaken && isPhotoSaved && (
+            <img
+              className="mt-1 inline-block shrink-0 w-full rounded-md border border-blue-600 bg-blue-600 px-12 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-blue-600 focus:outline-none focus:ring active:text-blue-500 dark:hover:bg-blue-700 dark:hover:text-white text-center"
+              src={isPhotoSaved}
+              alt="Foto tirada"
+            />
+
           )}
         </div>
       ) : (
